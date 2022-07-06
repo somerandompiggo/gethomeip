@@ -1,0 +1,16 @@
+@import url('https://fonts.googleapis.com/css2?family=Kantumruy+Pro:wght@300;400&display=swap');
+
+body {
+    background-color: #202020;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Kantumruy Pro', sans-serif;
+    color: white;
+}
+#content {
+    text-align: center;
+}
