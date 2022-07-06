@@ -6,7 +6,7 @@ def startupchk():
     try:
         open("password").read()
     except:
-        print("Password file not found. Please enter a password.")
+        print("Password file not found. Please enter a password.\nRemember, the client password is stored in plaintext!")
         f = open("password", "w")
         f.write(hashlib.sha256(getpass.getpass("Password: ").encode("UTF-8")).hexdigest())
         f.close()
@@ -15,6 +15,9 @@ def startupchk():
 def getpwhash():
     f = open("password", "r")
     return(f.read())
+
+def gethomeip():
+    return("real")
 
 startupchk()
 
@@ -28,9 +31,11 @@ def index():
 def style():
     return(send_file("css/style.css"))
 
-@app.route("/access")
+@app.route("/access", methods=["POST"])
 def access():
-    if (request.args("password") == getpwhash()):
-        return(render_template("access.html", ip="yes"))
+    if (hashlib.sha256(request.form.get("password").encode("UTF-8")).hexdigest() == getpwhash()):
+        return(render_template("access.html", ip=gethomeip()))
+    else:
+        return(render_template("access.html", ip="Incorrect password"))
 
 app.run()
