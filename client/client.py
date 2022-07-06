@@ -1,13 +1,18 @@
-import request
+import requests
+import getpass
+import json
 
 def startupchk():
     try:
-        open("password").read()
+        open("conf.json").read()
     except:
-        print("Password file not found. Please enter a password.")
-        f = open("password", "w")
-        f.write(hashlib.sha256(getpass.getpass("Password: ").encode("UTF-8")).hexdigest())
+        print("Config file not found. Please enter a password and the URI to the server.\nRemember, the client password is stored in plaintext!")
+        config = {}
+        config["password"] = getpass.getpass("Password: ")
+        config["uri"] = input("URI: ")
+        f = open("conf.json", "w")
+        f.write(json.dumps(config))
         f.close()
-        print("Done. Running Flask server")
+        print("Done. Running client.")
 
 startupchk()
