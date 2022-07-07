@@ -2,6 +2,8 @@ from flask import *
 import getpass
 import hashlib
 
+homeip = ""
+
 def startupchk():
     try:
         open("password").read()
@@ -16,8 +18,11 @@ def getpwhash():
     f = open("password", "r")
     return(f.read())
 
-def gethomeip():
-    return("real")
+def chkpass(password):
+    if (hashlib.sha256(password.encode("UTF-8")).hexdigest() == getpwhash()):
+        return(True)
+    else:
+        return(False)
 
 startupchk()
 
@@ -33,9 +38,22 @@ def style():
 
 @app.route("/access", methods=["POST"])
 def access():
-    if (hashlib.sha256(request.form.get("password").encode("UTF-8")).hexdigest() == getpwhash()):
-        return(render_template("access.html", ip=gethomeip()))
+    global homeip
+    if (chkpass(request.form.get("password"))):
+        if (homeip == ""):
+            return(render_template("access.html", ip=("The client has not sent an IP yet!")))
+        else:
+            return(render_template("access.html", ip=("Your home IP is: " + homeip)))
     else:
-        return(render_template("access.html", ip="Incorrect password"))
+        return(render_template("access.html", ip="That password is incorrect, please try again."))
+
+@app.route("/set", methods=["POST"])
+def set():
+    global homeip
+    if (chkpass(request.form.get("password"))):
+        homeip = request.remote_addr
+        return()
+    else:
+        return()
 
 app.run()
